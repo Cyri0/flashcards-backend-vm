@@ -30,8 +30,11 @@ if DEBUG:
     ALLOWED_HOSTS = []
 else:
     SECRET_KEY = os.getenv('SECRET_KEY')
-    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
-
+    ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv("ALLOWED_HOSTS", "").split(",")
+    if host.strip()
+    ]
 
 
 # Application definition
@@ -114,7 +117,10 @@ LANGUAGE_CODE = 'hu-hu'
 TIME_ZONE = 'Europe/Budapest'
 USE_I18N = True
 USE_TZ = True
-STATIC_URL = 'static/'
+
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR.parent / "static"
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
@@ -134,9 +140,11 @@ SPECTACULAR_SETTINGS = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    origin.strip()
+    for origin in os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
+    if origin.strip()
 ]
+
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -144,4 +152,10 @@ CORS_ALLOW_METHODS = [
     'PATCH',
     'POST',
     'PUT',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
 ]
